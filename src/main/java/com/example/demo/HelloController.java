@@ -17,6 +17,8 @@ public class HelloController {
         put("Moriah", 4D);
     }};
 
+    long lastTimeMapCleared = System.currentTimeMillis();
+
     @GetMapping("/getUserLocation/{name}")
     public String getUserLocation(@PathVariable String name) {
         maybeClearMap();
@@ -36,11 +38,9 @@ public class HelloController {
     }
 
     public void maybeClearMap(){
-        LocalTime now = LocalTime.now();
-        int minutes = now.getMinute();
-
-        if (minutes % 10 == 0) {
+        if (System.currentTimeMillis() - lastTimeMapCleared > 600000){
             locations.clear();
+            lastTimeMapCleared = System.currentTimeMillis();
         }
     }
 
