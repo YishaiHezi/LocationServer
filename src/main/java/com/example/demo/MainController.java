@@ -4,10 +4,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.time.LocalTime;
 
+
+/**
+ * The main controller.
+ */
 @RestController
-public class HelloController {
+public class MainController {
 
 
     Map<String, Double> locations = new HashMap<>() {{
@@ -19,6 +22,10 @@ public class HelloController {
 
     long lastTimeMapCleared = System.currentTimeMillis();
 
+
+    /**
+     * Api end-point for getting a user's location.
+     */
     @GetMapping("/getUserLocation/{name}")
     public String getUserLocation(@PathVariable String name) {
         maybeClearMap();
@@ -30,6 +37,9 @@ public class HelloController {
     }
 
 
+    /**
+     * Api end-point for setting a user's location.
+     */
     @PostMapping("/SendUserLocation")
     public String postUserLocation(@RequestBody UserLocation user) {
         maybeClearMap();
@@ -37,8 +47,9 @@ public class HelloController {
         return "Thanks! the user: " + user.getName() + " and its location accepted!";
     }
 
-    public void maybeClearMap(){
-        if (System.currentTimeMillis() - lastTimeMapCleared > 600000){
+
+    public void maybeClearMap() {
+        if (System.currentTimeMillis() - lastTimeMapCleared > 600000) {
             locations.clear();
             lastTimeMapCleared = System.currentTimeMillis();
         }
