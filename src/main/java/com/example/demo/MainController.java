@@ -1,5 +1,8 @@
 package com.example.demo;
 
+
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -27,13 +30,9 @@ public class MainController {
      * Api end-point for getting a user's location.
      */
     @GetMapping("/getUserLocation/{name}")
-    public String getUserLocation(@PathVariable String name) {
+    public UserLocation getUserLocation(@PathVariable String name) {
         maybeClearMap();
-        if (locations.containsKey(name))
-            return "The location of " + name + " is: " + locations.get(name);
-
-        else
-            return "The location of " + name + " is unknown!";
+        return new UserLocation(name, locations.getOrDefault(name, null));
     }
 
 
@@ -57,25 +56,23 @@ public class MainController {
 
 
     public static class UserLocation {
-        private String name;
-        private Double location;
+        private final String name;
+        private final Double location;
+
+        UserLocation(@NonNull String name, @Nullable Double location){
+            this.name = name;
+            this.location = location;
+        }
 
         // Getter and Setter methods
         public String getName() {
             return name;
         }
 
-        public void setName(String name) {
-            this.name = name;
-        }
-
         public Double getLocation() {
             return location;
         }
 
-        public void setLocation(Double location) {
-            this.location = location;
-        }
     }
 
 }
