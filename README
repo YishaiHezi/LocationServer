@@ -1,0 +1,8 @@
+For developers:
+
+In order to use this application, you need to do the following things:
+
+1. Run the database:
+    open terminal, and run the following command: "docker compose up"
+
+2. Run the application from intellij.
