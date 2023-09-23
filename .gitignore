@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### DynamoDB ###
-shared-local-instance.db
+/docker/dynamodb/shared-local-instance.db
