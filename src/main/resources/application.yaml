@@ -9,3 +9,14 @@ spring:
     dynamodb:
       entity2ddl:
         auto: create-only
+
+
+server:
+  address: 0.0.0.0
+  port: 8443
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-type: PKCS12
+    key-store-password: 123qwe
+    key-alias: mytestkey
+
