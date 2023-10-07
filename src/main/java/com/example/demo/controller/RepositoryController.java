@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
+import com.example.demo.Test;
 import com.example.demo.model.User;
 import com.example.demo.model.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -33,6 +35,15 @@ public class RepositoryController {
     @PostMapping("/User")
     public User addUser(@RequestBody User user) {
         return userRepository.save(user);
+    }
+
+
+    /**
+     * This method is only for testing.
+     */
+    @GetMapping("/Test")
+    public ResponseEntity<Test> getTest() {
+        return ResponseEntity.ok(new Test("123", "name1", 123D, 123D));
     }
 
 }
