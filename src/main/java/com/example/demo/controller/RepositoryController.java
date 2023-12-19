@@ -38,12 +38,20 @@ public class RepositoryController {
     }
 
 
+    // todo: these methods can be deleted:
+
     /**
      * This method is only for testing.
      */
     @GetMapping("/Test")
     public ResponseEntity<Test> getTest() {
         return ResponseEntity.ok(new Test("123", "name1", 123D, 123D));
+    }
+
+
+    @GetMapping("/test1")
+    public String test1(){
+        return "hello!";
     }
 
 }

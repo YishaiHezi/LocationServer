@@ -3,6 +3,9 @@ package com.example.demo;
 /**
  * This class is only for testing.
  */
+
+// todo: this class can be deleted.
+
 public class Test {
 
     private String id;
