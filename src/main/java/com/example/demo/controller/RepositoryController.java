@@ -23,7 +23,7 @@ public class RepositoryController {
     /**
      * Get the user with the given id.
      */
-    @GetMapping("/User/{id}")
+    @GetMapping("/GetUser/{id}")
     public User getUser(@PathVariable("id") String id) {
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
@@ -32,9 +32,9 @@ public class RepositoryController {
     /**
      * Save the given user in the database.
      */
-    @PostMapping("/User")
+    @PostMapping("/AddUser")
     public User addUser(@RequestBody User user) {
-        return userRepository.save(user);
+        return userRepository.save(Encryptor.encryptUser(user));
     }
 
 
