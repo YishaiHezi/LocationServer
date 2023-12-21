@@ -109,17 +109,14 @@ public class Encryptor {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    /**
-     * Here we encrypt all the needed fields of the user using the methods above.
-     */
-    @NonNull
-    public static User encryptUser(@NonNull User user){
-
-        // encrypt the password:
+    public static void encryptUserPassword(@NonNull User user){
         String plainTextPassword = user.getPassword();
         String encryptedPassword = encryptPassword(plainTextPassword);
         user.setPassword(encryptedPassword);
+    }
 
+
+    public static void encryptUserMail(@NonNull User user){
         String mail = user.getMail();
 
         // encrypt the mail:
@@ -130,12 +127,21 @@ public class Encryptor {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
 
+
+    /**
+     * Here we encrypt all the needed fields of the user using the methods above.
+     */
+    @NonNull
+    public static User encryptUser(@NonNull User user){
+        encryptUserPassword(user);
+        encryptUserMail(user);
 
         return user;
     }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static void main(String[] args) {
 
