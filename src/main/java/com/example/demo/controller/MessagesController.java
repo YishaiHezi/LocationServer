@@ -14,7 +14,7 @@ public class MessagesController {
 
     private final FcmService fcmService;
 
-    // Autowiring the FcmService using constructor injection
+    // Auto wiring the FcmService using constructor injection
     @Autowired
     public MessagesController(FcmService fcmService) {
         this.fcmService = fcmService;

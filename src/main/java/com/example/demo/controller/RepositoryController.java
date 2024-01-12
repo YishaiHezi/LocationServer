@@ -21,11 +21,46 @@ public class RepositoryController {
 
 
     /**
+     * Used to send messages to the client with firebase.
+     */
+    private final FcmService fcmService;
+
+
+    @Autowired
+    RepositoryController(FcmService fcmService){
+        this.fcmService = fcmService;
+    }
+
+
+    /**
      * Get the user with the given id.
      */
+
+    // todo: this method should be implemented using background thread pool.
+
     @GetMapping("/GetUser/{id}")
     public User getUser(@PathVariable("id") String id) {
-        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user =  userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+//        long time = user.getLastTimeChecked();
+//
+//        if (System.currentTimeMillis() - time > 60000){
+//            // todo: try to update the time by calling the client.
+//
+//            String fcmToken = user.getFcmToken();
+//
+//            fcmService.sendMessageToClient(fcmToken, "postLocation", "");
+//
+//        }
+//        else {
+//            return user;
+//        }
+
+        String fcmToken = user.getFcmToken();
+        fcmService.sendMessageToClient(fcmToken, "postLocation", "");
+
+
+        return user;
     }
 
 
@@ -35,6 +70,15 @@ public class RepositoryController {
     @PostMapping("/AddUser")
     public User addUser(@RequestBody User user) {
         return userRepository.save(Encryptor.encryptUser(user));
+    }
+
+
+    /**
+     * Get the user with the given id.
+     */
+    @GetMapping("/GetAllUsers")
+    public Iterable<User> getAllUser() {
+        return userRepository.findAll();
     }
 
 

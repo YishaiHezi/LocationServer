@@ -35,6 +35,12 @@ public class User {
 
 
     /**
+     * The time when the location (lat & lon) were recorded. (UTC)
+     */
+    private long lastTimeChecked;
+
+
+    /**
      * the latitude value of the location of the user.
      */
     private Double lat;
@@ -44,6 +50,12 @@ public class User {
      * the longitude value of the location of the user.
      */
     private Double lon;
+
+
+    /**
+     * The fcm token of the user. used for messaging with firebase.
+     */
+    private String fcmToken;
 
 
     @DynamoDBHashKey(attributeName = "id")
@@ -87,6 +99,15 @@ public class User {
     }
 
 
+    @DynamoDBAttribute(attributeName = "lastTimeChecked")
+    public long getLastTimeChecked() {
+        return lastTimeChecked;
+    }
+
+    public void setLastTimeChecked(long lastTimeChecked) {
+        this.lastTimeChecked = lastTimeChecked;
+    }
+
     @DynamoDBAttribute(attributeName = "lat")
     public Double getLat() {
         return lat;
@@ -107,5 +128,15 @@ public class User {
         this.lon = lon;
     }
 
+
+    @DynamoDBAttribute(attributeName = "fcmToken")
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 
 }
