@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * Define end points that uses the DB.
  */
 @RestController
-public class RepositoryController {
+public class MainController {
 
 
     @Autowired
@@ -27,7 +27,7 @@ public class RepositoryController {
 
 
     @Autowired
-    RepositoryController(FcmService fcmService){
+    MainController(FcmService fcmService){
         this.fcmService = fcmService;
     }
 
