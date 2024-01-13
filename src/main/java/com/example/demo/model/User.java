@@ -3,6 +3,7 @@ package com.example.demo.model;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import org.springframework.lang.NonNull;
 
 
 /**
@@ -137,6 +138,15 @@ public class User {
 
     public void setFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
+    }
+
+
+    /**
+     * Sets a new location to the user.
+     */
+    public void setLocation(@NonNull Location location){
+        setLat(location.getLat());
+        setLon(location.getLon());
     }
 
 }
