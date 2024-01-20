@@ -54,7 +54,7 @@ public class MainController {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setLocation(location);
 
-        return userRepository.save(Encryptor.encryptUser(user));
+        return userRepository.save(user);
     }
 
 
