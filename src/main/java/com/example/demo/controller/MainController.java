@@ -5,9 +5,12 @@ import com.example.demo.Test;
 import com.example.demo.model.Location;
 import com.example.demo.model.User;
 import com.example.demo.model.UserRepository;
+import com.example.demo.model.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 
 /**
@@ -17,32 +20,68 @@ import org.springframework.web.bind.annotation.*;
 public class MainController {
 
 
+    /**
+     * The DB's repository.
+     */
     @Autowired
     UserRepository userRepository;
 
 
     /**
+     * The service that responsible to communicate with firebase.
+     */
+    FcmService fcmService;
+
+
+
+    @Autowired
+    public MainController(FcmService fcmService) {
+        this.fcmService = fcmService;
+    }
+
+
+
+    /**
+     * Add the given user to the DB.
+     */
+    @PostMapping("/AddUser")
+    public ResponseEntity<Void> addUser(@RequestBody User user) {
+        user.setLastTimeChecked(System.currentTimeMillis());
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
      * Get the user with the given id.
      */
-
-
-
     @GetMapping("/GetUser/{id}")
     public User getUser(@PathVariable("id") String id) {
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
 
-    // todo: this method should be implemented using background thread pool.
-    // todo: need to think how it should be done. because if the requested user location is not updated -
-    // todo: we need to send an fcm message to the user to update its location, and then wait until the data
-    // todo: in the DB will be updated.
-
+    /**
+     * Get the location of the user with the given id.
+     */
     @GetMapping("/GetUserLocation/{id}")
-    public Location getUserLocation(@PathVariable("id") String id){
+    public ResponseEntity<Location> getUserLocation(@PathVariable("id") String id) {
+        Optional<User> userResult = userRepository.findById(id);
 
-        // todo: implement
-        return new Location(0D,0D); // dummy location
+        if (userResult.isPresent()) {
+            User user = userResult.get();
+
+            if (UserUtils.isLocationValid(user.getLastTimeChecked())) {
+                return ResponseEntity.ok(new Location(user.getLat(), user.getLon()));
+            }
+
+            fcmService.sendMessageToClient(user.getFcmToken(), "update_location", "");
+
+            return ResponseEntity.accepted().build();
+        }
+
+        else {
+            throw new ResourceNotFoundException("The requested user location was not found!");
+        }
     }
 
 
@@ -53,9 +92,11 @@ public class MainController {
     public User updateUserLocation(@PathVariable("id") String id, @RequestBody Location location) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setLocation(location);
+        user.setLastTimeChecked(System.currentTimeMillis());
 
         return userRepository.save(user);
     }
+
 
 
     /**
@@ -79,7 +120,7 @@ public class MainController {
 
 
     @GetMapping("/test1")
-    public String test1(){
+    public String test1() {
         return "hello!";
     }
 
