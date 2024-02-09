@@ -18,16 +18,6 @@ public class User {
      */
     private String id;
 
-    /**
-     * The mail of the user.
-     */
-    private String mail;
-
-
-    /**
-     * The password of the user.
-     */
-    private String password;
 
     /**
      * The name of the user.
@@ -68,32 +58,12 @@ public class User {
         this.id = id;
     }
 
-    @DynamoDBAttribute(attributeName = "mail")
-    public String getMail() {
-        return mail;
-    }
-
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-
-    @DynamoDBAttribute(attributeName = "password")
-    public String getPassword() {
-        return password;
-    }
-
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
 
     @DynamoDBAttribute(attributeName = "name")
     public String getName() {
         return name;
     }
+
 
     public void setName(String name) {
         this.name = name;
@@ -144,7 +114,7 @@ public class User {
     /**
      * Sets a new location to the user.
      */
-    public void setLocation(@NonNull Location location){
+    public void setLocation(@NonNull Location location) {
         setLat(location.getLat());
         setLon(location.getLon());
     }

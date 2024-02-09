@@ -109,25 +109,25 @@ public class Encryptor {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    public static void encryptUserPassword(@NonNull User user){
-        String plainTextPassword = user.getPassword();
-        String encryptedPassword = encryptPassword(plainTextPassword);
-        user.setPassword(encryptedPassword);
-    }
-
-
-    public static void encryptUserMail(@NonNull User user){
-        String mail = user.getMail();
-
-        // encrypt the mail:
-        try {
-            SecretKey secretKey = stringToSecretKey("xmsn/MuofvXV7hsBhHCsMYfRJwrYbQfXxN6qlRYSp3U=");
-            String encryptedMail = encryptEmail(mail, secretKey);
-            user.setMail(encryptedMail);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    public static void encryptUserPassword(@NonNull User user){
+//        String plainTextPassword = user.getPassword();
+//        String encryptedPassword = encryptPassword(plainTextPassword);
+//        user.setPassword(encryptedPassword);
+//    }
+//
+//
+//    public static void encryptUserMail(@NonNull User user){
+//        String mail = user.getMail();
+//
+//        // encrypt the mail:
+//        try {
+//            SecretKey secretKey = stringToSecretKey("xmsn/MuofvXV7hsBhHCsMYfRJwrYbQfXxN6qlRYSp3U=");
+//            String encryptedMail = encryptEmail(mail, secretKey);
+//            user.setMail(encryptedMail);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 
     /**
@@ -135,8 +135,8 @@ public class Encryptor {
      */
     @NonNull
     public static User encryptUser(@NonNull User user){
-        encryptUserPassword(user);
-        encryptUserMail(user);
+//        encryptUserPassword(user);
+//        encryptUserMail(user);
 
         return user;
     }
