@@ -108,6 +108,21 @@ public class MainController {
     }
 
 
+    /**
+     * The end point for updating the firebase token of a user, with the given firebaseToken.
+     * The id - is the id of the user.
+     */
+    @PostMapping("/updateFirebaseToken/{id}")
+    public ResponseEntity<Void> updateToken(@PathVariable("id") String id, @RequestParam String firebaseToken) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setFcmToken(firebaseToken);
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok().build();
+    }
+
+
     // todo: these methods can be deleted:
 
     /**
