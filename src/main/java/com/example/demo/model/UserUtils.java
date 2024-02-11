@@ -12,7 +12,7 @@ public class UserUtils {
      * last 5 minutes.
      */
     public static boolean isLocationValid(long lastTimeChecked) {
-        return System.currentTimeMillis() - lastTimeChecked < 300_000;
+        return System.currentTimeMillis() - lastTimeChecked < 300_00; // This is 5 seconds
     }
 
 

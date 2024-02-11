@@ -74,6 +74,8 @@ public class MainController {
                 return ResponseEntity.ok(new Location(user.getLat(), user.getLon()));
             }
 
+            System.out.println("sending request to another user!");
+
             fcmService.sendMessageToClient(user.getFcmToken(), "update_location", "");
 
             return ResponseEntity.accepted().build();
@@ -112,7 +114,7 @@ public class MainController {
      * The end point for updating the firebase token of a user, with the given firebaseToken.
      * The id - is the id of the user.
      */
-    @PostMapping("/updateFirebaseToken/{id}")
+    @PostMapping("/UpdateFirebaseToken/{id}")
     public ResponseEntity<Void> updateToken(@PathVariable("id") String id, @RequestParam String firebaseToken) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setFcmToken(firebaseToken);
