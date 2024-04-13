@@ -8,9 +8,11 @@ import com.example.demo.model.UserRepository;
 import com.example.demo.model.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 
 /**
@@ -60,31 +62,129 @@ public class MainController {
     }
 
 
+    // todo: this is the second version (with future), we need to check it:
+//
+//    /**
+//     * Get the location of the user with the given id.
+//     */
+//    @GetMapping("/GetUserLocation/{id}")
+//    public ResponseEntity<CompletableFuture<Location>> getUserLocation2(@PathVariable("id") String id) {
+//        CompletableFuture<Location> future = new CompletableFuture<>();
+//        fetchLocation(id)
+//                .thenAccept(location -> future.complete(location))
+//                .exceptionally(throwable -> {
+//                    future.completeExceptionally(throwable);
+//                    return null;
+//                });
+//
+//        return ResponseEntity.ok(future);
+//    }
+//
+//
+//
+//    @Async
+//    private CompletableFuture<Location> fetchLocation(String id){
+//        CompletableFuture<Location> future = new CompletableFuture<>();
+//
+//        try {
+//
+//
+//            Optional<User> userResult = userRepository.findById(id);
+//
+//            if (userResult.isEmpty())
+//                throw new ResourceNotFoundException("The requested user location was not found!");
+//
+//            User user = userResult.get();
+//            if (UserUtils.isLocationValid(user.getLastTimeChecked())){
+//                future.complete(new Location(user.getLat(), user.getLon()));
+//
+//                return future;
+//            }
+//
+//            // Sending a request to the other user (to update its location).
+//            System.out.println("sending request to another user!");
+//            fcmService.sendMessageToClient(user.getFcmToken(), "update_location", "");
+//
+//            int tries = 3;
+//
+//            while (!UserUtils.isLocationValid(user.getLastTimeChecked()) && tries > 0){
+//                Thread.sleep(1000); // wait
+//                userResult = userRepository.findById(id);
+//
+//                if (userResult.isEmpty())
+//                    throw new ResourceNotFoundException("The requested user location was not found!");
+//
+//                user = userResult.get();
+//                tries -= 1;
+//            }
+//
+//            future.complete(new Location(user.getLat(), user.getLon()));
+//
+//            return future;
+//
+//
+//        } catch (InterruptedException e) {
+//            future.completeExceptionally(e);
+//        }
+//
+//        return future;
+//    }
+
+
+
+    // todo: need to make this method better:
+
     /**
      * Get the location of the user with the given id.
      */
     @GetMapping("/GetUserLocation/{id}")
     public ResponseEntity<Location> getUserLocation(@PathVariable("id") String id) {
-        Optional<User> userResult = userRepository.findById(id);
+        Location location = fetchLocation(id);
 
-        if (userResult.isPresent()) {
+        return ResponseEntity.ok(location);
+    }
+
+
+
+    @Async
+    private Location fetchLocation(String id){
+
+        try {
+            Optional<User> userResult = userRepository.findById(id);
+
+            if (userResult.isEmpty())
+                throw new ResourceNotFoundException("The requested user location was not found!");
+
             User user = userResult.get();
-
-            if (UserUtils.isLocationValid(user.getLastTimeChecked())) {
-                return ResponseEntity.ok(new Location(user.getLat(), user.getLon()));
+            if (UserUtils.isLocationValid(user.getLastTimeChecked())){
+                return new Location(user.getLat(), user.getLon());
             }
 
+            // Sending a request to the other user (to update its location).
             System.out.println("sending request to another user!");
-
             fcmService.sendMessageToClient(user.getFcmToken(), "update_location", "");
 
-            return ResponseEntity.accepted().build();
-        }
+            int tries = 3;
 
-        else {
-            throw new ResourceNotFoundException("The requested user location was not found!");
+            while (!UserUtils.isLocationValid(user.getLastTimeChecked()) && tries > 0){
+                Thread.sleep(1000); // wait
+                userResult = userRepository.findById(id);
+
+                if (userResult.isEmpty())
+                    throw new ResourceNotFoundException("The requested user location was not found!");
+
+                user = userResult.get();
+                tries -= 1;
+            }
+
+            return new Location(user.getLat(), user.getLon());
+
+        } catch (InterruptedException e) {  // todo: deal with this case.
+            return new Location(0D, 0D);
         }
     }
+
+
 
 
     /**
@@ -92,6 +192,9 @@ public class MainController {
      */
     @PostMapping("/UpdateUserLocation/{id}")
     public User updateUserLocation(@PathVariable("id") String id, @RequestBody Location location) {
+
+        System.out.println("Update the location of this user: " + id + "with this location: " + location);
+
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setLocation(location);
         user.setLastTimeChecked(System.currentTimeMillis());
