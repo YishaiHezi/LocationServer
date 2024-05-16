@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import org.springframework.lang.NonNull;
 
@@ -59,7 +60,13 @@ public class User {
     }
 
 
+    /**
+     * A get method for the name attribute.
+     * We defined here a GSI (Global Secondary Index), which is an index on the "name" attribute.
+     * The GSI is the DynamoDBIndexHashKey annotation.
+     */
     @DynamoDBAttribute(attributeName = "name")
+    @DynamoDBIndexHashKey(globalSecondaryIndexName = "NameIndex", attributeName = "name")
     public String getName() {
         return name;
     }

@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 import com.example.demo.Test;
 import com.example.demo.model.Location;
@@ -11,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -34,12 +38,10 @@ public class MainController {
     FcmService fcmService;
 
 
-
     @Autowired
     public MainController(FcmService fcmService) {
         this.fcmService = fcmService;
     }
-
 
 
     /**
@@ -61,16 +63,20 @@ public class MainController {
     }
 
 
-    // todo: continue from here:
     /**
-     * Get all the users with the given name.
+     * Get all the users that their name starts with the given prefix.
+     * We use here an index (GSI) to search, so it suppose to be efficient.
      */
-//    @GetMapping("/GetUser/{name}")
-//    public User getUsers(@PathVariable("name") String name) {
-////        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-//        return
-//    }
+    @GetMapping("/GetUsersByPrefix/{prefix}")
+    public List<User> getUsersByPrefix(@PathVariable("prefix") String prefix) {
+        DynamoDBQueryExpression<User> queryExpression = new DynamoDBQueryExpression<>();
+        queryExpression.withIndexName("NameIndex")
+                .withKeyConditionExpression("begins_with(name, :prefix)")
+                .withExpressionAttributeValues(Collections.singletonMap(":prefix", new AttributeValue().withS(prefix)))
+                .withConsistentRead(false); // GSI does not support consistent read
 
+        return userRepository.findByNameStartsWith(prefix);
+    }
 
 
     // todo: need to make this method better:
@@ -86,9 +92,8 @@ public class MainController {
     }
 
 
-
     @Async
-    private Location fetchLocation(String id){
+    private Location fetchLocation(String id) {
 
         try {
             Optional<User> userResult = userRepository.findById(id);
@@ -97,7 +102,7 @@ public class MainController {
                 throw new ResourceNotFoundException("The requested user location was not found!");
 
             User user = userResult.get();
-            if (UserUtils.isLocationValid(user.getLastTimeChecked())){
+            if (UserUtils.isLocationValid(user.getLastTimeChecked())) {
                 return new Location(user.getLat(), user.getLon());
             }
 
@@ -107,7 +112,7 @@ public class MainController {
 
             int tries = 3;
 
-            while (!UserUtils.isLocationValid(user.getLastTimeChecked()) && tries > 0){
+            while (!UserUtils.isLocationValid(user.getLastTimeChecked()) && tries > 0) {
                 Thread.sleep(1000); // wait
                 userResult = userRepository.findById(id);
 
@@ -126,8 +131,6 @@ public class MainController {
     }
 
 
-
-
     /**
      * Update the location of the given user in the database.
      */
@@ -142,7 +145,6 @@ public class MainController {
 
         return userRepository.save(user);
     }
-
 
 
     /**
