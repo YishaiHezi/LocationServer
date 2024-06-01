@@ -82,15 +82,15 @@ public class MainController {
      * Get the location of the user with the given id.
      */
     @GetMapping("/GetUserLocation/{id}")
-    public ResponseEntity<Location> getUserLocation(@PathVariable("id") String id) {
-        Location location = fetchLocation(id);
+    public ResponseEntity<LastSeen> getUserLocation(@PathVariable("id") String id) {
+        LastSeen lastSeen = fetchLocation(id);
 
-        return ResponseEntity.ok(location);
+        return ResponseEntity.ok(lastSeen);
     }
 
 
     @Async
-    private Location fetchLocation(String id) {
+    private LastSeen fetchLocation(String id) {
 
         try {
             Optional<User> userResult = userRepository.findById(id);
@@ -99,8 +99,10 @@ public class MainController {
                 throw new ResourceNotFoundException("The requested user location was not found!");
 
             User user = userResult.get();
-            if (UserUtils.isLocationValid(user.getLastTimeChecked())) {
-                return new Location(user.getLat(), user.getLon());
+            long lastSeenTime = user.getLastTimeChecked();
+
+            if (UserUtils.isLocationValid(lastSeenTime)) {
+                return new LastSeen(user.getName(), user.getLat(), user.getLon(), lastSeenTime);
             }
 
             // Sending a request to the other user (to update its location).
@@ -120,10 +122,10 @@ public class MainController {
                 tries -= 1;
             }
 
-            return new Location(user.getLat(), user.getLon());
+            return new LastSeen(user.getName(), user.getLat(), user.getLon(), user.getLastTimeChecked());
 
         } catch (InterruptedException e) {  // todo: deal with this case.
-            return new Location(0D, 0D);
+            return new LastSeen("unknown", 0D, 0D, 0L);
         }
     }
 
