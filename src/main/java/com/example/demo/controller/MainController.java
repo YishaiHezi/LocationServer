@@ -110,7 +110,7 @@ public class MainController {
             int tries = 3;
 
             while (!UserUtils.isLocationValid(user.getLastTimeChecked()) && tries > 0) {
-                Thread.sleep(1000); // wait
+                Thread.sleep(1000);
                 userResult = userRepository.findById(id);
 
                 if (userResult.isEmpty())
