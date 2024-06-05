@@ -1,22 +1,26 @@
+
+# AWS DynamoDB Configuration:
 aws:
-  dynamoDBUrl: http://localhost:8000
-  accessKey: EMPTY
-  secretKey: EMPTY
+  dynamoDBUrl: http://localhost:8000 # URL for local DynamoDB
+  accessKey: EMPTY # Placeholder for AWS access key
+  secretKey: EMPTY # Placeholder for AWS secret key
 
 
+# Spring Data DynamoDB Configuration:
 spring:
   data:
     dynamodb:
       entity2ddl:
-        auto: create-only
+        auto: create-only # Create tables if they don't exist
 
 
+# Server Configuration:
 server:
-  address: 0.0.0.0
-  port: 8443
+  address: 0.0.0.0  # Bind to all network interfaces
+  port: 8443  # The server will listen on port 8443. This is typically used for HTTPS.
   ssl:
-    key-store: classpath:keystore.p12
-    key-store-type: PKCS12
-    key-store-password: 123qwe
-    key-alias: mytestkey
+    key-store: classpath:keystore.p12  # Keystore file path
+    key-store-type: PKCS12  # Keystore type
+    key-store-password: 123qwe  # Keystore password
+    key-alias: mytestkey  # Alias for the key in the keystore
 
