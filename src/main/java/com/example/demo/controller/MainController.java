@@ -170,6 +170,17 @@ public class MainController {
     }
 
 
+    /**
+     * Delete the user with the given id.
+     */
+    @PostMapping("/DeleteUser/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") String id) {
+        userRepository.deleteById(id);
+
+        return ResponseEntity.ok().build();
+    }
+
+
     // todo: these methods can be deleted:
 
     /**
