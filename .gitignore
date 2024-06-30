@@ -34,3 +34,8 @@ build/
 
 ### DynamoDB ###
 /docker/dynamodb/shared-local-instance.db
+
+### Firebase ###
+/src/main/resources/firebase-service-account.json
+
+#// todo: also, need to check how can I configure my system in aws so that my application will get the content of the firebase-service-account.json.
