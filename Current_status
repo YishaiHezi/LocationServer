@@ -1,0 +1,20 @@
+Current status:
+
+Where am I now:
+I want to upload the server app to aws.
+Currently I'm trying to understand all the different components in my application, to know
+How can I upload it to aws.
+
+For example, regarding the DB, instead of using a local instance of DynamoDB,
+I need to use the DynamoDB service provided by AWS.
+
+##############################
+
+Also, need to fix the following:
+
+- Currently all the flow (user 1 ask for user 2 location) should work. but it doesn't work good, because
+  I do Thread.sleep() and stuff like that. I need to make it much less expensive. I do Thread.sleep, so it can block the api
+  in case there are a lot of requests.
+
+- Need to make the text search (of users whose name starts with prefix) not case sensitive.
+

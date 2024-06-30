@@ -1,14 +1,18 @@
-For developers:
-
-In order to use this application, you need to do the following things:
-
-1. Run the database:
-    open terminal, and run the following command: "docker compose up"
-
-2. Run the application from intellij.
+Currently this application runs only locally. So in order to run it,
+you need to do the following steps:
 
 
+1. Clone the project from github.
+2. Open the application in intellij, and place the firebase-service-account.json under the resources folder
+   (next to application.yaml file). The firebase-service-account.json file is located now in my drive,
+   next to the other passwords.
+3. Have a docker in your local computer.
+4. Run the database in the docker:
+   open terminal, and run the following command: "docker compose up"
+5. Run the application from intellij.
 
-More instructions are in yishaihazi@gmail.com (under "Starred" folder):
-search "Instructions for the locator server application (for backup)"
 
+################################################################################
+
+Note:
+For future development, see the Current_status file located in this project.
